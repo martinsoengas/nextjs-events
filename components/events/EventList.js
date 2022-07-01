@@ -3,11 +3,11 @@ import EventItem from "./EventItem";
 import classes from "./EventList.module.css";
 
 const EventList = (props) => {
-  const { featuredEvents } = props;
+  const { events } = props;
 
   return (
     <ul className={classes.list}>
-      {featuredEvents.map((event) => (
+      {events.map((event) => (
         <EventItem
           key={event.id}
           id={event.id}
