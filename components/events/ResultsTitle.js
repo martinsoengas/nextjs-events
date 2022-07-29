@@ -4,10 +4,12 @@ import classes from "./ResultsTitle.module.css";
 function ResultsTitle(props) {
   const { date } = props;
 
-  const humanReadableDate = new Date(date).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  const dateOptions = { month: "long", year: "numeric" };
+
+  const humanReadableDate = new Date(date).toLocaleDateString(
+    "en-US",
+    dateOptions
+  );
 
   return (
     <section className={classes.title}>
