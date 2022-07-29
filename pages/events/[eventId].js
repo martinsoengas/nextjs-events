@@ -1,19 +1,16 @@
-import { useRouter } from "next/router";
-import { getEventById } from "../../dummy_data";
+import { Fragment } from "react";
 
 import EventContent from "../../components/event-detail/EventContent";
 import EventLogistics from "../../components/event-detail/EventLogistics";
 import EventSummary from "../../components/event-detail/EventSummary";
-import LogisticsItem from "../../components/event-detail/LogisticsItem";
-import { Fragment } from "react";
+
+import { getEventById, getFeaturedEvents } from "../../helpers/api-util";
 
 const EventDetailPage = (props) => {
-  const router = useRouter();
-
-  const event = getEventById(router.query.eventId);
+  const event = props.event;
 
   if (!event) {
-    return <p>ERROR 404, NOT FOUND</p>;
+    return <div className="center">Loading...</div>;
   }
 
   return (
@@ -32,6 +29,40 @@ const EventDetailPage = (props) => {
       </Fragment>
     </div>
   );
+};
+
+export const getStaticProps = async (context) => {
+  const eventId = context.params.eventId;
+
+  const event = await getEventById(eventId);
+
+  if (!event) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      event,
+    },
+    revalidate: 30,
+  };
+};
+
+export const getStaticPaths = async () => {
+  const events = await getFeaturedEvents();
+
+  const paths = events.map((event) => ({
+    params: {
+      eventId: event.id,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking",
+  };
 };
 
 export default EventDetailPage;
